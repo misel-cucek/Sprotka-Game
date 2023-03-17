@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Level
+    uniqueID: 1327596663
+    locked: 0
+  - name: Objects
+    uniqueID: 2570671191
+    locked: 0
+  - name: Entites
+    uniqueID: 1760123843
+    locked: 0
