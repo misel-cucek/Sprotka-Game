@@ -1,31 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
-    public int score = 0;
+    public GameObject playerPrefab;
+
+    public int score;
     public int lives = 3; // the player's remaining lives
-    public int numCoins = 0; // the number of coins the player has collected
-    public bool isGameOver = false; // whether the game is over or not
-    public bool isFinished = false; // whether the game has been finished or not
+    public int numCoins; // the number of coins the player has collected
+    public bool isGameOver; // whether the game is over or not
+    public bool isFinished; // whether the game has been finished or not
+
+    private MovementManager _movementManager;
+    private GameObject _player;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         score = 0;
         lives = 3;
         numCoins = 0;
         isGameOver = false;
         isFinished = false;
+
+        // Create the player and attach the MovementManager script
+        _player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        _movementManager = _player.GetComponent<MovementManager>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        Vector3 direction = new Vector3(horizontalInput, 0.0f, verticalInput).normalized;
+
+        _movementManager.Move(direction);
     }
+
     public void CoinCollected()
     {
         numCoins++;
@@ -34,12 +47,14 @@ public class GameManager : MonoBehaviour
 
     public void LifeLost()
     {
+        // TODO call _movmentManager for lives
         lives--;
         if (lives <= 0)
         {
             GameOver();
         }
     }
+
     public void GameOver()
     {
         isGameOver = true;
