@@ -2,45 +2,56 @@ using UnityEngine;
 
 public class MovementManager : MonoBehaviour
 {
-    public CharacterController controller;
-    public float speed = 10.0f;
-    public float rotationSpeed = 5.0f;
-    public int lives = 3;
+    public Rigidbody2D controller;
+    public float speed = 10000.0f;
+    public int collisionCount = 0;
+    public Vector3 respawn = new(20.28f, 17.538f, 0.0f);
 
     private void Start()
     {
-        controller = GetComponent<CharacterController>();
+        controller = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
+        var horizontalInput = Input.GetAxisRaw("Horizontal");
+        var verticalInput = Input.GetAxisRaw("Vertical");
 
-        Vector3 direction = new Vector3(horizontalInput, 0.0f, verticalInput).normalized;
+        var direction = new Vector3(horizontalInput, verticalInput, 0.0f);
 
         Move(direction);
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!hit.gameObject.CompareTag("Wall")) return;
+        if (collision.gameObject.CompareTag("Win"))
+        {
+            transform.position = respawn;
+            gameObject.SetActive(true);
+            collisionCount = 0;
+        }
 
-        lives--;
-        Vector3 reverseDirection = -controller.velocity.normalized;
-        Move(reverseDirection);
+        // check if the collision is with an object tagged "obstacle"
+        if (!collision.gameObject.CompareTag("Enemy")) return;
+        collisionCount++;
+
+        // check if the collision count has reached the limit
+        if (collisionCount >= 3)
+        {
+            // disable the player object and show the end game object
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            // move the player to the respawn position
+            transform.position = respawn;
+            gameObject.SetActive(true);
+            collisionCount = 0;
+        }
     }
 
-    public void Move(Vector3 direction)
+    private void Move(Vector3 direction)
     {
-        Vector3 movement = direction * speed * Time.deltaTime;
-
-        controller.Move(movement);
-
-        if (movement.magnitude > 0.0f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
+        controller.velocity = direction * 2;
     }
 }

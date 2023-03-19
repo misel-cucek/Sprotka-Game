@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject enemyPrefab; // reference to the enemy prefab
     public float spawnInterval = 2f; // interval at which to spawn enemies
     public float spawnDistance = 10f; // maximum distance from player to spawn enemies
     public int numEnemies = 5; // number of enemies to spawn
@@ -15,11 +14,6 @@ public class GameManager : MonoBehaviour
     public bool isGameOver; // whether the game is over or not
     public bool isFinished; // whether the game has been finished or not
 
-    public GameObject playerPrefab;
-    private MovementManager _movementManager;
-    private GameObject _player;
-    private Transform _playerTransform; // reference to the player's transform
-
     // Start is called before the first frame update
     private void Start()
     {
@@ -28,32 +22,11 @@ public class GameManager : MonoBehaviour
         numCoins = 0;
         isGameOver = false;
         isFinished = false;
-
-        _playerTransform = FindObjectOfType<MovementManager>().transform;
-
-        for (int i = 0; i < numEnemies; i++)
-        {
-            // Choose a random position within the game area to spawn the enemy
-            float randomX = Random.Range(-spawnDistance, spawnDistance);
-            float randomZ = Random.Range(-spawnDistance, spawnDistance);
-            Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ) + _playerTransform.position;
-
-            Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        }
-
-        _player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        _movementManager = _player.GetComponent<MovementManager>();
     }
 
     // Update is called once per frame
     private void Update()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-
-        Vector3 direction = new Vector3(horizontalInput, 0.0f, verticalInput).normalized;
-
-        _movementManager.Move(direction);
     }
 
     public void CoinCollected()
