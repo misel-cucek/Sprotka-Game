@@ -1,19 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
-    public int score = 0;
+    public float spawnInterval = 2f; // interval at which to spawn enemies
+    public float spawnDistance = 10f; // maximum distance from player to spawn enemies
+    public int numEnemies = 5; // number of enemies to spawn
+
+
+    public int score;
     public int lives = 3; // the player's remaining lives
+
     public int numCoins = 0; // the number of coins the player has collected
     public bool isGameOver = false; // whether the game is over or not
     public bool isFinished = false; // whether the game has been finished or not
     public bool isGameCompleted = false; // whether the game has been completed or not
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         score = 0;
         lives = 3;
@@ -24,7 +28,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (isGameOver)
         {
@@ -35,6 +39,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     public void CoinCollected()
     {
         numCoins++;
@@ -43,12 +48,14 @@ public class GameManager : MonoBehaviour
 
     public void LifeLost()
     {
+        // TODO call _movmentManager for lives
         lives--;
         if (lives <= 0)
         {
             GameOver();
         }
     }
+
     public void GameOver()
     {
         isGameOver = true;

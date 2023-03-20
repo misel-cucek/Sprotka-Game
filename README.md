@@ -1,5 +1,5 @@
 # Sprotka-Game
 Owners:
-Blaž Zorec
-Mišel Čuček
+Blaž Zorec,
+Mišel Čuček,
 Anej Bezjak
